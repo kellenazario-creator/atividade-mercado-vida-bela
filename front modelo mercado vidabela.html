@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Mercado Vida Bela</title>
+
+<style>
+:root{
+--vermelho:#d71920;
+--azul:#003a8f;
+--cinza:#f2f2f2;
+}
+*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+body{margin:0;background:var(--cinza)}
+
+#loginArea{
+height:100vh;
+background:linear-gradient(135deg,var(--vermelho),var(--azul));
+display:flex;align-items:center;justify-content:center
+}
+.login-box{
+background:white;padding:40px;width:340px;border-radius:10px;text-align:center
+}
+.login-box input{width:100%;padding:12px;margin:12px 0}
+.login-box button{
+width:100%;padding:12px;background:var(--vermelho);
+color:white;border:none;font-size:16px;font-weight:bold
+}
+
+#siteConteudo{display:none}
+
+.topo{
+background:var(--vermelho);color:white;
+padding:25px;text-align:center;font-size:30px;font-weight:bold
+}
+
+nav{
+background:var(--azul);padding:15px;
+display:flex;flex-wrap:wrap;justify-content:center;gap:25px
+}
+nav a{color:white;font-weight:bold;cursor:pointer;text-decoration:none}
+nav a:hover{color:yellow}
+
+.pagina{display:none;padding:40px;max-width:1200px;margin:auto}
+.ativa{display:block}
+
+.titulo{
+font-size:26px;color:var(--azul);
+border-left:6px solid var(--vermelho);
+padding-left:10px;margin-bottom:20px
+}
+
+.produtos{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px
+}
+.card{
+background:white;padding:15px;border-radius:8px;text-align:center
+}
+.preco{font-size:20px;font-weight:bold;color:var(--azul)}
+.card button{
+margin-top:10px;width:100%;padding:10px;
+background:var(--azul);color:white;border:none
+}
+
+.caixa{background:white;padding:25px;border-radius:10px}
+.item{display:flex;justify-content:space-between;margin-bottom:8px}
+.total{font-size:22px;font-weight:bold;margin-top:15px}
+
+input,select{width:100%;padding:10px;margin:8px 0}
+
+.btn{
+background:var(--vermelho);color:white;
+padding:15px;border:none;width:100%;
+font-size:18px;margin-top:15px
+}
+
+.qr{background:#eee;padding:30px;text-align:center;margin:15px 0}
+
+footer{
+background:var(--azul);color:white;text-align:center;
+padding:15px;margin-top:40px
+}
+</style>
+
+<script>
+let carrinho=[]
+let taxaSacola=0
+let tipoEntrega=""
+let tipoPagamento=""
+
+function entrar(){
+loginArea.style.display="none"
+siteConteudo.style.display="block"
+}
+
+function mostrar(p){
+document.querySelectorAll(".pagina").forEach(x=>x.classList.remove("ativa"))
+document.getElementById(p).classList.add("ativa")
+}
+
+function adicionar(nome,preco){
+carrinho.push({nome,preco})
+alert("Produto adicionado")
+}
+
+function carregarCarrinho(){
+let lista=document.getElementById("listaCarrinho")
+let total=0
+lista.innerHTML=""
+carrinho.forEach(p=>{
+total+=p.preco
+lista.innerHTML+=`<div class="item"><span>${p.nome}</span><span>R$ ${p.preco.toFixed(2)}</span></div>`
+})
+total+=taxaSacola
+document.getElementById("total").innerText="R$ "+total.toFixed(2)
+}
+
+function continuar(){
+if(carrinho.length==0){alert("Carrinho vazio");return}
+mostrar("tipoEntrega")
+}
+
+function escolherEntrega(tipo){
+tipoEntrega=tipo
+if(tipo=="retirada"){
+taxaSacola=0
+mostrar("pagamento")
+}else{
+mostrar("entrega")
+}
+}
+
+function confirmarEntrega(){
+let campos=document.querySelectorAll("#entrega input")
+for(let c of campos){
+if(c.value.trim()==""){alert("Cadastro incompleto");return}
+}
+mostrar("pagamento")
+}
+
+function escolherPagamento(tipo){
+tipoPagamento=tipo
+pix.style.display=(tipo=="pix")?"block":"none"
+cartao.style.display=(tipo=="cartao")?"block":"none"
+}
+
+function finalizarPagamento(){
+if(tipoPagamento=="pix"){
+mostrar("final")
+}else if(tipoPagamento=="cartao"){
+let campos=document.querySelectorAll("#cartao input")
+for(let c of campos){
+if(c.value.trim()==""){alert("Dados do cartao incompletos");return}
+}
+mostrar("final")
+}else{
+alert("Escolha a forma de pagamento")
+}
+}
+</script>
+</head>
+
+<body>
+
+<div id="loginArea">
+<div class="login-box">
+<h2>Mercado Vida Bela</h2>
+<input placeholder="Digite seu email">
+<button onclick="entrar()">Entrar</button>
+</div>
+</div>
+
+<div id="siteConteudo">
+
+<div class="topo">Mercado Vida Bela</div>
+
+<nav>
+<a onclick="mostrar('home')">Home</a>
+<a onclick="mostrar('produtos')">Produtos</a>
+<a onclick="mostrar('carrinho');carregarCarrinho()">Carrinho</a>
+<a onclick="mostrar('contato')">Contato</a>
+</nav>
+
+<section id="home" class="pagina ativa">
+<h2 class="titulo">Bem vindo</h2>
+<p>Seu mercado online completo.</p>
+</section>
+
+<section id="produtos" class="pagina">
+<h2 class="titulo">Produtos</h2>
+<div class="produtos">
+<div class="card"><h3>Arroz 5kg</h3><div class="preco">R$ 21.90</div><button onclick="adicionar('Arroz',21.9)">Adicionar</button></div>
+<div class="card"><h3>Feijao</h3><div class="preco">R$ 7.99</div><button onclick="adicionar('Feijao',7.99)">Adicionar</button></div>
+<div class="card"><h3>Cafe</h3><div class="preco">R$ 15.00</div><button onclick="adicionar('Cafe',15)">Adicionar</button></div>
+</div>
+</section>
+
+<section id="carrinho" class="pagina">
+<h2 class="titulo">Carrinho</h2>
+<div class="caixa">
+<div id="listaCarrinho"></div>
+<div class="total">Total: <span id="total">R$ 0.00</span></div>
+<button class="btn" onclick="continuar()">Continuar</button>
+</div>
+</section>
+
+<section id="tipoEntrega" class="pagina">
+<h2 class="titulo">Como deseja receber?</h2>
+<button class="btn" onclick="escolherEntrega('entrega')">Entrega em domicilio</button>
+<button class="btn" onclick="escolherEntrega('retirada')">Retirar na loja</button>
+</section>
+
+<section id="entrega" class="pagina">
+<h2 class="titulo">Dados de Entrega</h2>
+<div class="caixa">
+<input placeholder="Nome completo">
+<input placeholder="CPF">
+<input placeholder="Telefone">
+<input placeholder="Rua">
+<input placeholder="Numero">
+<input placeholder="Bairro">
+<input placeholder="Cidade">
+<input placeholder="CEP">
+<button class="btn" onclick="confirmarEntrega()">Continuar para pagamento</button>
+</div>
+</section>
+
+<section id="pagamento" class="pagina">
+<h2 class="titulo">Forma de Pagamento</h2>
+<button class="btn" onclick="escolherPagamento('pix')">PIX</button>
+<button class="btn" onclick="escolherPagamento('cartao')">Cartao</button>
+
+<div id="pix" style="display:none">
+<div class="qr">QR CODE PIX SIMULADO</div>
+</div>
+
+<div id="cartao" style="display:none">
+<input placeholder="Nome no cartao">
+<input placeholder="Numero do cartao">
+<input placeholder="Validade">
+<input placeholder="CVV">
+<input placeholder="CPF do titular">
+</div>
+
+<button class="btn" onclick="finalizarPagamento()">Finalizar pagamento</button>
+</section>
+
+<section id="final" class="pagina">
+<h2 class="titulo">Compra finalizada</h2>
+<p>Pagamento realizado com sucesso.</p>
+</section>
+
+<section id="contato" class="pagina">
+<h2 class="titulo">Contato</h2>
+<p>Email: atendimento@vidabela.com</p>
+<p>Whatsapp: (71) 99999-0000</p>
+</section>
+
+<footer>© 2025 Mercado Vida Bela</footer>
+
+</div>
+</body>
+</html>
